@@ -8,21 +8,48 @@ auth.set_access_token(access_token, access_token_secret)
 
 api = tweepy.API(auth)
 
-public_tweets = api.search('YCombinator', count=10)
-
+def followPeople(thatSaid, polarityMin = 0.3, atMost = 10):
+    print('Finding people to follow that said ' + thatSaid)
+    public_tweets = api.search(thatSaid, count=atMost)
+    following = []
+    tweeters = []
+    for tweet in public_tweets:
+        user = tweet.user
+        tweetInfo = {
+            'user': {
+                'name': user.name,
+                'twitter_handle': user.screen_name,
+                'id': user.id,
+                'url': user.url,
+                'profile_img': user.profile_image_url_https
+            },
+            'tweet': {
+                '_id': tweet.id,
+                'text': tweet.text,
+                'date': tweet.created_at,
+                'url': tweet.entities['urls'].url
+            }
+        }
+        print(tweetInfo)
+        tweeters.append(tweetInfo)
+        analysis = TextBlob(tweet.text)
+        sentiment = analysis.sentiment
+        if(sentiment.polarity > 0.3):
+            api.create_friendship(tweet.user.id)
+            following.append(tweet.user.name)
+        print('=========================================')
+    print(tweeters)
+    print()
+    print('=========================================')
+    print()
+    print(following)
+    return following, tweeters
+    
 # user = 'realDonaldTrump'
 # gotten_user = api.get_user(user)
 
 # public_tweets = api.mentions_timeline(gotten_user._json['id'])
 
 
-for tweet in public_tweets:
-    print(tweet.text)
-    print(tweet.user.name)
-    print(tweet.user.id)
-    analysis = TextBlob(tweet.text)
-    sentiment = analysis.sentiment
-    print(sentiment)
-    if(sentiment.polarity > 0.3):
-        api.create_friendship(tweet.user.id)
-    print('=========================================')
+if __name__ == "__main__":
+    followPeople('YCombinator')

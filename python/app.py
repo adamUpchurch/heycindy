@@ -1,6 +1,9 @@
-from flask import Flask
+from flask import Flask, request, render_template, jsonify
+import json
+from sentiment  import followPeople
 app = Flask(__name__)
 
-@app.route('/')
+@app.route('/follow_tweeter_by_phrase', methods=['POST'])
 def hello_world():
-    return 'Hello, World!'
+    data = json.loads(request.data)
+    return jsonify(followPeople(data['phrase']))
