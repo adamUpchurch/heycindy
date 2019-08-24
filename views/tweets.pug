@@ -1,0 +1,44 @@
+extends layout
+
+block scripts
+  script(src='/javascripts/tweetsHelper.js')
+
+block content
+  h1= title
+  p Results searched by #{search_phrase}
+
+  ul.container
+    each tweet in tweet_list
+      li.row.tweet
+        div.col-md
+          h7.thick #{tweet.user.name} 
+          a(href=tweet.user.url) @#{tweet.user.twitter_handle}
+          p Tweet: #{tweet.tweet.text}
+          p #{tweet.tweet.date}
+          div.container
+            div.row
+              div.col-sm
+                form(method='POST' action='/follow_tweeter')
+                  input#name.form-control(type='text', name='follower_id', required='true', hidden='true', disable='true')
+                  button.btn.btn-light(type='submit' onClick='myFunction()') follow
+              div.col-sm
+                form.col-sm(method='POST' action='/retweet_a_tweet')
+                  input#name.form-control(type='text', name='retweet_id', placeholder='phrase', required='true', hidden='true')
+                  button.btn.btn-light(type='submit') retweet
+              div.col-sm
+                form.col-sm(method='POST' action='/favorite_a_tweet')
+                  input(type='text', name='tweet_id', required='true', hidden='true')
+                  button.btn.btn-light(type='submit') like
+          
+        div.col-md
+          form(method='POST' action='/find_tweets_by_phrase')
+            .form-group
+              label(for='reply') Reply
+              textarea#name.form-control(name='reply', placeholder='Say something nice or do not say nothing!', minlength='1', maxlength= '140', rows='5' required='true')
+            div.container
+              div.row
+                div.col-sm.offset-sm-9
+                  button.btn.btn-primary(type='submit') reply
+        
+    else
+      li There are no tweets with that phrase you dumby.

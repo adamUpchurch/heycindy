@@ -8,13 +8,14 @@ auth.set_access_token(access_token, access_token_secret)
 
 api = tweepy.API(auth)
 
-def followPeople(thatSaid, polarityMin = 0.3, atMost = 10):
+def followPeople(thatSaid, polarityMin = 0.3, atMost = 5):
     print('Finding people to follow that said ' + thatSaid)
     public_tweets = api.search(thatSaid, count=atMost)
     following = []
     tweeters = []
     for tweet in public_tweets:
         user = tweet.user
+        print(tweet.entities['urls'])
         tweetInfo = {
             'user': {
                 'name': user.name,
@@ -27,7 +28,7 @@ def followPeople(thatSaid, polarityMin = 0.3, atMost = 10):
                 '_id': tweet.id,
                 'text': tweet.text,
                 'date': tweet.created_at,
-                'url': tweet.entities['urls'].url
+                # 'url': tweet.entities['urls'][0]['url'] or ''
             }
         }
         print(tweetInfo)

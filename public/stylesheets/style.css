@@ -1,8 +1,10 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+.tweet {
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: .1rem solid grey;
+  box-shadow: 0px 1px 1px -2px grey
 }
+.thick {
+  font-weight: bold;
 
-a {
-  color: #00B7FF;
 }
