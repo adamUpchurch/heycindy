@@ -8,13 +8,9 @@ var user = require('../controllers/users')
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  const cookies = {}
-  req.get('Cookie').split('; ').map(x => x.split('=')).forEach(cookie => {
-    cookies[cookie[0]] = cookie[1]
-  })
-  console.log(cookies)
+  console.log(req.session)
 
-  res.render('index', { title: 'Express', isAuthenticated: false});
+  res.render('index', { title: 'Express', isAuthenticated: req.session.isLoggedIn});
 });
 // User
 router.get('/register', user.register_get)
@@ -22,6 +18,8 @@ router.post('/register', user.register_post)
 
 router.get('/login', user.login_get)
 router.post('/login', user.login_post)
+
+router.post('/logout', user.logout_post)
 
 router.get('/user/:id/delete', user.delete_get)
 router.post('/user/:id/delete', user.delete_post)

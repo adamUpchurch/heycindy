@@ -12,7 +12,7 @@ module.exports = {
             .sort([['family_name', 'ascending']])
             .exec((err, list_users)=> {
                 if(err) { return next(err)}
-                res.render('user_list', {title: 'Users', user_list: list_users})
+                res.render('user_list', {title: 'Users', user_list: list_users, isAuthenticated: req.session.isLoggedIn})
             })
     },
     detail: (req, res, next) => {
@@ -30,11 +30,11 @@ module.exports = {
         }, (err, result) => {
             if(err) { return next(err)}
             console.log(result)
-            res.render('user_detail', {title: 'User', user: result.user, startups: result.startup})
+            res.render('user_detail', {title: 'User', user: result.user, startups: result.startup, isAuthenticated: req.session.isLoggedIn})
         })
         },
     register_get: (req, res) => {
-        res.render('register_form', {title: 'Register User'})
+        res.render('register_form', {title: 'Register User', isRegistrationPage:true})
     },
     register_post: [
         // Validate that the name field is not empty.
@@ -71,7 +71,7 @@ module.exports = {
             // If error is not empty - so if there are errors - weird but this works
             if(!errors.isEmpty()) {
                 //Error. Render form again with sanitized values/error message
-                res.render('user_form', { title: 'Register User', user: user, errors: errors.array()});
+                res.render('user_form', { title: 'Register User', user: user, errors: errors.array(), isAuthenticated: req.session.isLoggedIn});
                 return;
             }
 
@@ -88,7 +88,7 @@ module.exports = {
     ],
     login_get: (req, res) => {
         console.log(req.session)
-        res.render('log_in', {title: 'Register User'})
+        res.render('log_in', {title: 'Register User', isLoginPage:true, isAuthenticated: req.session.isLoggedIn})
     },
     login_post: [
         (req, res, next) => {
@@ -101,7 +101,7 @@ module.exports = {
             
             if(!errors.isEmpty()) {
                 //Error. Render form again with sanitized values/error message
-                res.render('user_form', { title: 'Register User', user: user, errors: errors.array()});
+                res.render('user_form', { title: 'Register User', user: user, errors: errors.array(), isAuthenticated: req.session.isLoggedIn});
                 return;
             }
             else {
@@ -114,11 +114,6 @@ module.exports = {
                     console.log(user.password)
                     console.log(req.body.password)
                     const thePasswordIsCorrect = bcrypt.compareSync(req.body.password, user.password);
-
-                    // bcrypt.compare(req.body.password, user.password, function(err, res) {
-                    //     console.log(err)
-                    //     console.log(res)
-                    // });
 
                     if(thePasswordIsCorrect){
                         console.log('Loggin user in')
@@ -137,6 +132,12 @@ module.exports = {
         }
 
     ],
+    logout_post: (req, res) => {
+        req.session.destroy(error => {
+            console.log(error)
+            res.render('index')
+        })
+    },
     delete_get: (req, res) => {
         async.parallel({
             user: (callback) => {
@@ -151,7 +152,7 @@ module.exports = {
             if (results.user == null) {
                 res.redirect('/catalog/users')
             }
-            res.render('user_delete', {title: 'Delete User', user: results.user, startups: results.startups})
+            res.render('user_delete', {title: 'Delete User', user: results.user, startups: results.startups, isAuthenticated: req.session.isLoggedIn})
         })
     },
     delete_post: (req, res, next) => {
@@ -186,7 +187,7 @@ module.exports = {
             if (results.user == null) {
                 res.redirect('/api/users')
             }
-            res.render('user_form', {title: 'Update Author', user: results.user, startups: results.startups})
+            res.render('user_form', {title: 'Update Author', user: results.user, startups: results.startups, isAuthenticated: req.session.isLoggedIn})
         })
     },
     update_post: [
@@ -215,7 +216,7 @@ module.exports = {
     
                 if(!errors.isEmpty()) {
                     //Error. Render form again with sanitized values/error message
-                    res.render('user_form', { title: 'Register User', user: user, errors: errors.array()});
+                    res.render('user_form', { title: 'Register User', user: user, errors: errors.array(), isAuthenticated: req.session.isLoggedIn});
                     return;
                 }
                 else {

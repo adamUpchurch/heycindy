@@ -5,14 +5,18 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var express_session = require('express-session')
 var indexRouter = require('./routes/index');
-
-var app = express();
+var mongoDBStore = require('connect-mongodb-session')(express_session)
 
 var {MongoDB, session}       = require('./config/keys');
+var mongoDB = MongoDB.dbURI
 
+var app = express();
+var store = new mongoDBStore({
+  uri: MongoDB.uri,
+  collection: 'sessions'
+})
 //Set up mongoose connection
 var mongoose = require('mongoose')
-var mongoDB = MongoDB.dbURI
 mongoose.connect(mongoDB, {useNewURLParser: true});
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error: '));
@@ -28,7 +32,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(
-  express_session({secret: session.cookieKey, resave: false, saveUninitialized: false})
+  express_session({secret: session.cookieKey, resave: false, saveUninitialized: false, store: store, cookie:{maxAge: 3600}})
   )
 
 
