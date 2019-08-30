@@ -1,0 +1,28 @@
+var mongoose = require('mongoose')
+
+var Schema = mongoose.Schema;
+
+var UserSchema = new Schema({
+    first_name: {type: String, max: 100},
+    family_name: {type: String, max: 100},
+    company_name: {type: String, max: 100},
+    email: {type: String},
+    googleID: {type: String},
+    profile_pic: {type: String}
+})
+
+
+// Virtual for User's name
+UserSchema
+    .virtual('name')
+    .get(function() {
+        return this.family_name + ', ' + this.first_name;
+    });
+
+UserSchema
+    .virtual('url')
+    .get(function() {
+        return `/catalog/user${this._id}`
+    });
+
+    module.exports = mongoose.model('User', UserSchema)

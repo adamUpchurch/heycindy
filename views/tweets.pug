@@ -18,16 +18,18 @@ block content
           div.container
             div.row
               div.col-sm
-                form(method='POST' action='/follow_tweeter')
-                  input#name.form-control(type='text', name='follower_id', required='true', hidden='true', disable='true')
-                  button.btn.btn-light(type='submit' onClick='myFunction()') follow
+                form(method='POST' action='/create_friendship' target='hidden_iframe')
+                  input#name.form-control(type='text', name='follower_id', value=(tweet.user.id),required='true', hidden='true')
+                  button.btn.btn-light(type='submit') follow
+
               div.col-sm
-                form.col-sm(method='POST' action='/retweet_a_tweet')
-                  input#name.form-control(type='text', name='retweet_id', placeholder='phrase', required='true', hidden='true')
+                form.col-sm(method='POST' action='/create_retweet' target='hidden_iframe')
+                  input#name.form-control(type='text', name='tweet_id', value=(tweet.tweet._id), required='true', hidden='true')
                   button.btn.btn-light(type='submit') retweet
+
               div.col-sm
-                form.col-sm(method='POST' action='/favorite_a_tweet')
-                  input(type='text', name='tweet_id', required='true', hidden='true')
+                form.col-sm(method='POST' action='/create_favorite' target='hidden_iframe'`)
+                  input(type='text', name='tweet_id', value=(tweet.tweet._id), required='true', hidden='true')
                   button.btn.btn-light(type='submit') like
           
         div.col-md

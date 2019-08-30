@@ -1,0 +1,14 @@
+extends layout
+
+block content
+  h1 Log In
+  form(method='POST' action='').container
+    div.col-6
+      .form-group.row.container 
+        input#name.form-control(type='text', name='email', placeholder='email', required='true')
+        input#name.form-control(type='password', name='password', placeholder='password', required='true')
+      button.btn.btn-primary(type='submit') log in
+    if errors
+      ul
+          for error in errors
+              li!= error.msg
