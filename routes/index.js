@@ -8,7 +8,13 @@ var user = require('../controllers/users')
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+  const cookies = {}
+  req.get('Cookie').split('; ').map(x => x.split('=')).forEach(cookie => {
+    cookies[cookie[0]] = cookie[1]
+  })
+  console.log(cookies)
+
+  res.render('index', { title: 'Express', isAuthenticated: false});
 });
 // User
 router.get('/register', user.register_get)

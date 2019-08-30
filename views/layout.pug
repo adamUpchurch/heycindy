@@ -1,4 +1,5 @@
 doctype html
+
 html
   head
     title= title
@@ -6,4 +7,10 @@ html
     link(rel='stylesheet', href='/stylesheets/style.css')
     block scripts
   body
+    nav.navbar.navbar-dark.bg-dark
+      div.container
+          a.navbar-brand(href="/") Hey Cindy!
+          if !isAuthenticated
+            a.btn.btn-outline-secondary.my-2.my-sm-0(href="/login") Login
+            a.btn.btn-outline-secondary.my-2.my-sm-0(href="/Register") Register
     block content

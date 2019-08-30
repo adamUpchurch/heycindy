@@ -1,5 +1,6 @@
 var User = require('../models/users'),
     async   = require('async');
+    bcrypt  = require('bcryptjs')
 
 const   { body,validationResult } = require('express-validator/check'),
         { sanitizeBody } = require('express-validator/filter');
@@ -41,28 +42,40 @@ module.exports = {
             .isAlphanumeric().withMessage('First name has non-alphanumeric characters.'),
         body('family_name', 'User name required').isLength({ min: 1 }).trim()
             .isAlphanumeric().withMessage('Family name has non-alphanumeric characters.'),
+        body('password', 'Password required').isLength({ min: 1 }).trim(),
 
         sanitizeBody('first_name').escape(),
         sanitizeBody('family_name').escape(),
+        sanitizeBody('email').escape(),
 
         (req, res, next) => {
             console.log('Creating new user!')
             console.log(req.body)
+
             // Extract the validation errors from a request.
             const errors = validationResult(req);
             const newUser = req.body
-            // Register a user object with escaped & trimmed data
+
+            // using bCrypt to hash password
+            var salt = bcrypt.genSaltSync(12);
+            var hash = bcrypt.hashSync(req.body.password, salt)
+        
+            // Register a user object with escaped, trimmed data & hashed password
             var user = new User({
                 first_name: newUser.first_name,
                 family_name: newUser.family_name,
-                personality: newUser.personality
+                email: newUser.email,
+                password: hash,
                 });
 
+            // If error is not empty - so if there are errors - weird but this works
             if(!errors.isEmpty()) {
                 //Error. Render form again with sanitized values/error message
                 res.render('user_form', { title: 'Register User', user: user, errors: errors.array()});
                 return;
             }
+
+            // There are no errors!!
             else {
                 // Data from form is valid
                 user.save(err => {
@@ -74,32 +87,51 @@ module.exports = {
 
     ],
     login_get: (req, res) => {
-        res.render('register_form', {title: 'Register User'})
+        console.log(req.session)
+        res.render('log_in', {title: 'Register User'})
     },
     login_post: [
         (req, res, next) => {
-            console.log('Creating new user!')
-            console.log(req.body)
+            console.log('Trying to log in user!')
             // Extract the validation errors from a request.
             const errors = validationResult(req);
-            const newUser = req.body
-            // Register a user object with escaped & trimmed data
-            var user = new User({
-                first_name: newUser.first_name,
-                family_name: newUser.family_name,
-                email: newUser.email
-                });
+            
 
+            const email = req.body.email
+            
             if(!errors.isEmpty()) {
                 //Error. Render form again with sanitized values/error message
                 res.render('user_form', { title: 'Register User', user: user, errors: errors.array()});
                 return;
             }
             else {
-                // Data from form is valid
-                user.save(err => {
-                    if(err) {return next(err)}
-                    res.redirect(user.url)
+                // Find user by email
+                User.findOne({email})
+                .exec((error, user) => {
+                    if(error) res.redirect('/login')
+                    console.log(user)
+                    console.log('Comparing: ')
+                    console.log(user.password)
+                    console.log(req.body.password)
+                    const thePasswordIsCorrect = bcrypt.compareSync(req.body.password, user.password);
+
+                    // bcrypt.compare(req.body.password, user.password, function(err, res) {
+                    //     console.log(err)
+                    //     console.log(res)
+                    // });
+
+                    if(thePasswordIsCorrect){
+                        console.log('Loggin user in')
+                        req.session.isLoggedIn = true;
+                        req.session.user = user;
+                        req.session.save(err => {
+                            console.log(err)
+                            return res.redirect('/')
+                        })
+                    } else {
+                        console.log('incorrect password')
+                        res.redirect('/login')
+                    }
                 })
             }
         }

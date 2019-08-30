@@ -6,9 +6,12 @@ var UserSchema = new Schema({
     first_name: {type: String, max: 100},
     family_name: {type: String, max: 100},
     company_name: {type: String, max: 100},
-    email: {type: String},
+    email: {type: String, unique: true},
     googleID: {type: String},
-    profile_pic: {type: String}
+    profile_pic: {type: String},
+    password: {
+        type: String
+    }
 })
 
 
@@ -22,7 +25,7 @@ UserSchema
 UserSchema
     .virtual('url')
     .get(function() {
-        return `/catalog/user${this._id}`
+        return `/user/${this._id}`
     });
 
     module.exports = mongoose.model('User', UserSchema)
