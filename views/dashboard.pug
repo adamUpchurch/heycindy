@@ -1,0 +1,15 @@
+extends layout
+
+block content
+  a.btn.btn-outline-light.my-2.my-sm-0.btn-sm(href="/product") Product
+  h1= title
+  p Welcome to #{title}
+  form(method='POST' action='/find_tweets_by_phrase')
+    .form-group
+      label(for='phrase') Search 
+      input#name.form-control(type='text', name='phrase', placeholder='phrase', required='true')
+    button.btn.btn-primary(type='submit') Submit
+    if errors
+      ul
+          for error in errors
+              li!= error.msg

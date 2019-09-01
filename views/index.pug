@@ -3,13 +3,5 @@ extends layout
 block content
   h1= title
   p Welcome to #{title}
-  form(method='POST' action='/find_tweets_by_phrase')
-    .form-group
-      label(for='phrase') Search 
-      input#name.form-control(type='text', name='phrase', placeholder='phrase', required='true')
-    button.btn.btn-primary(type='submit') Submit
-    if errors
-      ul
-          for error in errors
-              li!= error.msg
 
+  h7 Find tweets to engage with.

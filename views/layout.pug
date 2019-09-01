@@ -9,7 +9,10 @@ html
   body
     nav.navbar.navbar-dark.bg-dark
       div.container
-          a.navbar-brand(href="/") Hey Cindy!
+          if isAuthenticated
+            a.navbar-brand(href="/dashboard") Hey Cindy!
+          unless isAuthenticated
+            a.navbar-brand(href="/") Hey Cindy!
           div
             unless isAuthenticated
               unless isLoginPage
@@ -17,8 +20,8 @@ html
               unless isRegistrationPage
                 a.btn.btn-outline-light.my-2.my-sm-0.btn-sm(href="/Register") Register
             if isAuthenticated
-              form(method='POST' action='/logout').container
-                button.btn.btn-outline-secondary.my-2.my-sm-0.btn-sm(type="submit") Logout
+              form(method='POST' action='/logout')
+                button.btn.btn-outline-secondary.col.my-2.my-sm-0.btn-sm(type="submit") Logout
               
     div.container
       block content

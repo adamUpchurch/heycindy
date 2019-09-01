@@ -1,9 +1,9 @@
 var express = require('express');
 var router = express.Router();
-const axios = require('axios');
+var User = require('../models/users');
 
-var localTweets = require('../localTweets')
 var user = require('../controllers/users')
+var twitter = require('../controllers/tweets')
 
 
 /* GET home page. */
@@ -12,7 +12,12 @@ router.get('/', function(req, res, next) {
 
   res.render('index', { title: 'Express', isAuthenticated: req.session.isLoggedIn});
 });
-// User
+
+router.get('/dashboard', user.dashboard)
+
+router.get('/profile', user.profile_get)
+router.post('/profile', user.profile_post)
+
 router.get('/register', user.register_get)
 router.post('/register', user.register_post)
 
@@ -31,59 +36,10 @@ router.get('/user/:id', user.detail)
 router.get('/users', user.list)
 
 // Tweets
-
-router.post('/find_tweets_by_phrase', (req,res,next) => {
-  console.log('find_tweets_by_phrase')
-  axios.post('http://127.0.0.1:5000/find_tweets_by_phrase', {
-    phrase: req.body.phrase
-  })
-  .then(function (response) {
-    console.log(response.data);
-    res.render('tweets', { title: 'Tweets', tweet_list: response.data });
-  })
-  .catch(function (error) {
-    console.log(error);
-  });
-})
-
-router.post('/create_friendship', (req,res,next) => {
-  console.log(req.body)
-  axios.post('http://127.0.0.1:5000/create_friendship', {
-    follower_id: req.body.follower_id
-  })
-  .then(function (response) {
-    console.log(response);
-  })
-  .catch(function (error) {
-    console.log(error);
-  });
-})
-
-router.post('/create_favorite', (req,res,next) => {
-  console.log(req.body)
-  axios.post('http://127.0.0.1:5000/create_favorite', {
-    follower_id: req.body.tweet_id
-  })
-  .then(function (response) {
-    console.log(response);
-  })
-  .catch(function (error) {
-    console.log(error);
-  });
-})
-
-router.post('/create_retweet', (req,res,next) => {
-  console.log(req.body)
-  axios.post('http://127.0.0.1:5000/create_retweet', {
-    follower_id: req.body.tweet_id
-  })
-  .then(function (response) {
-    console.log(response);
-  })
-  .catch(function (error) {
-    console.log(error);
-  });
-})
+router.post('/find_tweets_by_phrase', twitter.find_tweets_by_phrase)
+router.post('/create_friendship', twitter.create_friendship)
+router.post('/create_favorite', twitter.create_favorite)
+router.post('/create_retweet', twitter.create_retweet)
 
 
 module.exports = router;

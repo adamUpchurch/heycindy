@@ -1,14 +1,20 @@
 import tweepy
 import os
 from textblob import TextBlob
-from keys import consumer_key, consumer_secret, access_token, access_token_secret
+# from keys import consumer_key, consumer_secret, access_token, access_token_secret
 
-auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
-auth.set_access_token(access_token, access_token_secret)
+# auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+# auth.set_access_token(access_token, access_token_secret)
 
-api = tweepy.API(auth)
+# api = tweepy.API(auth)
 
-def followPeople(thatSaid, polarityMin = 0.3, atMost = 5):
+def twitterAPI(twitter):
+    auth = tweepy.OAuthHandler(twitter['consumer_key'], twitter['consumer_secret'])
+    auth.set_access_token(twitter['access_token'], twitter['access_token_secret'])
+    return tweepy.API(auth)
+
+def followPeople(thatSaid, credentials, polarityMin = 0.3, atMost = 5):
+    api = twitterAPI(credentials)
     print('Finding people to follow that said ' + thatSaid)
     public_tweets = api.search(thatSaid, count=atMost, tweet_mode='extended')
     following = []
@@ -39,7 +45,8 @@ def followPeople(thatSaid, polarityMin = 0.3, atMost = 5):
 
     return following, tweeters
 
-def get_tweets(thatSaid, atMost = 5):
+def get_tweets(thatSaid, credentials, atMost = 5):
+    api = twitterAPI(credentials)
     public_tweets = api.search(thatSaid, count=atMost, tweet_mode='extended')
     tweeters = []
     for tweet in public_tweets:
@@ -67,19 +74,20 @@ def get_tweets(thatSaid, atMost = 5):
 
 # public_tweets = api.mentions_timeline(gotten_user._json['id'])
 
-def create_friendship(id):
-    newFriend = api.create_friendship(id)
+def create_friendship(id, credentials):
+    api = twitterAPI(credentials)
+    api.create_friendship(id)
     return 'Following new friend'
 
-def create_favorite(id):
-    newFriend = api.create_favorite(id)
+def create_favorite(id, credentials):
+    api = twitterAPI(credentials)
+    api.create_favorite(id)
     return 'Loved a tweet'
 
-def retweet(id):
-    newFriend = api.retweet(id)
+def retweet(id, credentials):
+    api = twitterAPI(credentials)
+    api.retweet(id)
     return 'Retweeted a tweet'
-
-
 
 if __name__ == "__main__":
     followPeople('YCombinator')

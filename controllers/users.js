@@ -1,6 +1,7 @@
 var User = require('../models/users'),
     async   = require('async');
     bcrypt  = require('bcryptjs')
+    _ = require("underscore");
 
 const   { body,validationResult } = require('express-validator/check'),
         { sanitizeBody } = require('express-validator/filter');
@@ -108,7 +109,10 @@ module.exports = {
                 // Find user by email
                 User.findOne({email})
                 .exec((error, user) => {
-                    if(error) res.redirect('/login')
+                    console.log(user)
+                    if(_.isEmpty(user)) {
+                        res.render('log_in', {error: 'Username or password is incorrect'})
+                    }
                     console.log(user)
                     console.log('Comparing: ')
                     console.log(user.password)
@@ -121,7 +125,7 @@ module.exports = {
                         req.session.user = user;
                         req.session.save(err => {
                             console.log(err)
-                            return res.redirect('/')
+                            return res.redirect('/dashboard')
                         })
                     } else {
                         console.log('incorrect password')
@@ -229,4 +233,75 @@ module.exports = {
                 }
             }
         ],
+    dashboard: (req, res) => {
+        console.log(req.session)
+        res.render('dashboard', { title: 'Dashboard', isAuthenticated: req.session.isLoggedIn})
+    },
+    profile_get: (req, res) => {
+        User.findById(req.session.user._id, (err, user) => {
+            if(err) {
+                console.log(err)
+            }
+            if(user){
+                res.render('profile', {title: 'Profile', user: user, isAuthenticated: req.session.isLoggedIn})
+            } 
+            else {
+                res.redirect('/login')
+            }
+        })
+    },
+    profile_post: [
+        // Validate that the name field is not empty.
+        body('first_name', 'User name required').isLength({ min: 1 }).trim()
+            .isAlphanumeric().withMessage('First name has non-alphanumeric characters.'),
+        body('family_name', 'family name required').isLength({ min: 1 }).trim(),
+        body('consumer_key', 'consume_key is required').isLength({ min: 1 }).trim(),
+        body('consumer_secret', 'consumer_secret is required').isLength({ min: 1 }).trim(),
+        body('access_token', 'access_token is required').isLength({ min: 1 }).trim(),
+        body('access_token_secret', 'access_token_secret is required').isLength({ min: 1 }).trim(),
+
+        sanitizeBody('first_name').escape(),
+        sanitizeBody('family_name').escape(),
+        sanitizeBody('company_name').escape(),
+        sanitizeBody('email').escape(),
+        sanitizeBody('consumer_key').escape(),
+        sanitizeBody('consumer_secret').escape(),
+        sanitizeBody('access_token').escape(),
+        sanitizeBody('access_token_secret').escape(),
+
+        (req, res, next) => {
+            console.log('updating user information!')
+            console.log(req.body)
+            // Extract the validation errors from a request.
+            const errors = validationResult(req);
+            const user = req.body
+            // Register a user object with escaped & trimmed data
+            var updatedUser = new User({ 
+                first_name: user.first_name,
+                family_name: user.family_name,
+                email: user.email,
+                company: user.company,
+                twitterCredentials: {
+                    consumer_key: user.consumer_key,
+                    consumer_secret: user.consumer_secret,
+                    access_token: user.access_token,
+                    access_token_secret: user.access_token_secret,
+                },
+                _id:req.session.user._id //This is required, or a new ID will be assigned!
+            });
+            if(!errors.isEmpty()) {
+                //Error. Render form again with sanitized values/error message
+                res.render('user_form', { title: 'Register User', user: user, errors: errors.array(), isLoginPage:true, isAuthenticated: req.session.isLoggedIn});
+                return;
+            }
+            else {
+                // Data from form is valid. Update the record.
+                User.findByIdAndUpdate(req.session.user._id, updatedUser, {}, (err,UpdatedUser) => {
+                    if (err) { return next(err); }
+                        // Successful - redirect to book detail page.
+                        res.redirect('/profile');
+                    });
+            }
+        }
+    ],
 }

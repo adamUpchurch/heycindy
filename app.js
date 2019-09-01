@@ -32,7 +32,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(
-  express_session({secret: session.cookieKey, resave: false, saveUninitialized: false, store: store, cookie:{maxAge: 3600}})
+  express_session({secret: session.cookieKey, resave: false, saveUninitialized: false, store: store})
   )
 
 

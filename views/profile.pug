@@ -1,0 +1,20 @@
+extends layout
+
+block content
+  h1 Profile
+  form(method='POST' action='').container
+    div.col-6
+      .form-group.row.container
+        input#name.form-control(type='text', name='first_name', placeholder='first', value=(user.first_name ? user.first_name : ''), required='true')
+        input#name.form-control(type='text', name='family_name', placeholder='last', value=(user.family_name ? user.family_name : ''), required='true')
+        input#name.form-control(type='text', name='email', placeholder='email', value=(user.email ? user.email : ''), required='true')
+        label Twitter Credentials:
+        input#name.form-control(type='text', name='consumer_key', placeholder='consumer_key', value=(user.twitterCredentials.consumer_key ? user.twitterCredentials.consumer_key : ''), required='true')
+        input#name.form-control(type='text', name='consumer_secret', placeholder='consumer_secret', value=(user.twitterCredentials.consumer_secret ? user.twitterCredentials.consumer_secret : ''), required='true')
+        input#name.form-control(type='text', name='access_token', placeholder='access_token', value=(user.twitterCredentials.access_token ? user.twitterCredentials.access_token : ''), required='true')
+        input#name.form-control(type='text', name='access_token_secret', placeholder='access_token_secret', value=(user.twitterCredentials.access_token_secret ? user.twitterCredentials.access_token_secret : ''), required='true')
+      button.btn.btn-primary(type='submit') update
+    if errors
+      ul
+          for error in errors
+              li!= error.msg

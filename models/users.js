@@ -8,6 +8,12 @@ var UserSchema = new Schema({
     company_name: {type: String, max: 100},
     email: {type: String, unique: true},
     googleID: {type: String},
+    twitterCredentials: {
+        consumer_key: {type: String},
+        consumer_secret: {type: String},
+        access_token: {type: String},
+        access_token_secret: {type: String},
+    },
     profile_pic: {type: String},
     password: {
         type: String

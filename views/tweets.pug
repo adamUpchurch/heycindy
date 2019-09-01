@@ -28,7 +28,7 @@ block content
                   button.btn.btn-light(type='submit') retweet
 
               div.col-sm
-                form.col-sm(method='POST' action='/create_favorite' target='hidden_iframe'`)
+                form.col-sm(method='POST' action='/create_favorite' target='hidden_iframe')
                   input(type='text', name='tweet_id', value=(tweet.tweet._id), required='true', hidden='true')
                   button.btn.btn-light(type='submit') like
           
