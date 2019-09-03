@@ -7,12 +7,15 @@ var express_session = require('express-session')
 var indexRouter = require('./routes/index');
 var mongoDBStore = require('connect-mongodb-session')(express_session)
 
+require('dotenv').config();
+
 var {MongoDB, session}       = require('./config/keys');
-var mongoDB = MongoDB.dbURI
+
+var mongoDB = MongoDB.dbURI ? MongoDB.dbURI : `${process.env.MONGO_DB_UI}?retryWrites=true`
 
 var app = express();
 var store = new mongoDBStore({
-  uri: MongoDB.uri,
+  uri: MongoDB.uri ? MongoDB.uri : process.env.MONGO_DB_UI,
   collection: 'sessions'
 })
 //Set up mongoose connection
@@ -32,7 +35,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(
-  express_session({secret: session.cookieKey, resave: false, saveUninitialized: false, store: store})
+  express_session({secret: session.cookieKey ? session.cookieKey : process.env.COOKIE_KEY, resave: false, saveUninitialized: false, store: store})
   )
 
 

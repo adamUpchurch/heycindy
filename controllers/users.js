@@ -99,7 +99,7 @@ module.exports = {
             
 
             const email = req.body.email
-            
+            console.log(req.body)
             if(!errors.isEmpty()) {
                 //Error. Render form again with sanitized values/error message
                 res.render('user_form', { title: 'Register User', user: user, errors: errors.array(), isAuthenticated: req.session.isLoggedIn});

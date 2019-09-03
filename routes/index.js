@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var User = require('../models/users');
+var stripe = require('stripe')
 
 var user = require('../controllers/users')
 var twitter = require('../controllers/tweets')
@@ -10,7 +11,7 @@ var twitter = require('../controllers/tweets')
 router.get('/', function(req, res, next) {
   console.log(req.session)
 
-  res.render('index', { title: 'Express', isAuthenticated: req.session.isLoggedIn});
+  res.render('index', { title: 'Express', isHomePage: true,isAuthenticated: req.session.isLoggedIn});
 });
 
 router.get('/dashboard', user.dashboard)
@@ -40,6 +41,25 @@ router.post('/find_tweets_by_phrase', twitter.find_tweets_by_phrase)
 router.post('/create_friendship', twitter.create_friendship)
 router.post('/create_favorite', twitter.create_favorite)
 router.post('/create_retweet', twitter.create_retweet)
+
+
+router.post("/charge", (req, res) => {
+  let amount = 500;
+  console.log(stripe)
+
+  stripe.customers.create({
+     email: req.stripeEmail,
+    source: req.body.stripeToken
+  })
+  .then(customer =>
+    stripe.charges.create({
+      amount,
+      description: "Sample Charge",
+         currency: "usd",
+         customer: customer.id
+    }))
+  .then(charge => res.render("charge.pug"));
+});
 
 
 module.exports = router;
