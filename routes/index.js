@@ -38,9 +38,11 @@ router.get('/users', user.list)
 
 // Tweets
 router.post('/find_tweets_by_phrase', twitter.find_tweets_by_phrase)
+router.post('/reply_to_tweet', twitter.reply_to_tweet)
 router.post('/create_friendship', twitter.create_friendship)
 router.post('/create_favorite', twitter.create_favorite)
 router.post('/create_retweet', twitter.create_retweet)
+router.post('/follow_random', twitter.follow_random)
 
 
 router.post("/charge", (req, res) => {

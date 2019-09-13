@@ -6,7 +6,6 @@ block head
 block content
   h1= title
   p Results searched by #{search_phrase}
-
   ul.container
     each tweet in tweet_list
       li.row.tweet
@@ -33,10 +32,11 @@ block content
                   button.btn.btn-light(type='submit') like
           
         div.col-md
-          form(method='POST' action='/find_tweets_by_phrase')
+          form(method='POST' action='/reply_to_tweet' target='hidden_iframe')
             .form-group
-              label(for='reply') Reply
-              textarea#name.form-control(name='reply', placeholder='Say something nice or do not say nothing!', minlength='1', maxlength= '140', rows='5' required='true')
+              input(type='text', name='tweet_id', value=(tweet.tweet._id), required='true', hidden='true')
+              label(for='status') Reply
+              textarea#name.form-control(name='status', value=`${tweet.user.twitter_handle}`, minlength='1', maxlength= '280', rows='5' required='true')
             div.container
               div.row
                 div.col-sm.offset-sm-9

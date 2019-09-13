@@ -1,0 +1,13 @@
+// Custom.scss
+// Option A: Include all of Bootstrap
+
+// Your variable overrides
+$theme-colors: (
+  "primary": #49F4DA,
+  "light": #dafcf7
+);
+
+$font-family-monospace: ("Montserrat")
+
+@import "node_modules/bootstrap/scss/bootstrap";
+

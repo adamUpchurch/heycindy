@@ -18,9 +18,10 @@ def followPeople(thatSaid, credentials, polarityMin = 0.3, atMost = 5):
     print('Finding people to follow that said ' + thatSaid)
     public_tweets = api.search(thatSaid, count=atMost, tweet_mode='extended')
     following = []
-    tweeters = []
     for tweet in public_tweets:
         user = tweet.user
+        blob = TextBlob(tweet.full_text)
+        sentiment = blob.sentiment
         tweetInfo = {
             'user': {
                 'name': user.name,
@@ -33,24 +34,26 @@ def followPeople(thatSaid, credentials, polarityMin = 0.3, atMost = 5):
                 '_id': tweet.id,
                 'text': tweet.full_text,
                 'date': tweet.created_at,
-                # 'url': tweet.entities['urls'][0]['url'] or ''
+                'subjectivity': blob.subjectivity,
+                'polarity': blob.polarity
             }
         }
-        tweeters.append(tweetInfo)
-        analysis = TextBlob(tweet.text)
-        sentiment = analysis.sentiment
-        if(sentiment.polarity > 0.3):
+        if(sentiment.polarity > polarityMin):
             api.create_friendship(tweet.user.id)
-            following.append(tweet.user.name)
+            following.append(tweetInfo)
+    return following
 
-    return following, tweeters
-
-def get_tweets(thatSaid, credentials, atMost = 5):
+def get_tweets(thatSaid, credentials, atMost = 10):
     api = twitterAPI(credentials)
     public_tweets = api.search(thatSaid, count=atMost, tweet_mode='extended')
     tweeters = []
+
     for tweet in public_tweets:
         user = tweet.user
+        blob = TextBlob(tweet.full_text)
+        print(blob.sentiment)
+        print(blob.polarity)
+        print(blob.sentiment.subjectivity)
         tweetInfo = {
             'user': {
                 'name': user.name,
@@ -63,6 +66,8 @@ def get_tweets(thatSaid, credentials, atMost = 5):
                 '_id': tweet.id,
                 'text': tweet.full_text,
                 'date': tweet.created_at,
+                'sentiment': blob.sentiment,
+                'polarity': blob.polarity
                 # 'url': tweet.entities['urls'][0]['url'] or ''
             }
         }
@@ -87,6 +92,11 @@ def create_favorite(id, credentials):
 def retweet(id, credentials):
     api = twitterAPI(credentials)
     api.retweet(id)
+    return 'Retweeted a tweet'
+
+def reply_to_tweet(id, status, credentials):
+    api = twitterAPI(credentials)
+    api.update_status(status=status, in_reply_to_status_id=id)
     return 'Retweeted a tweet'
 
 if __name__ == "__main__":
