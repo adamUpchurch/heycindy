@@ -47,7 +47,8 @@ module.exports = {
                 })
                 .then(function (response) {
                 console.log(response.data);
-                res.render('tweets', { title: 'Tweets', tweet_list: response.data, isAuthenticated: req.session.isLoggedIn});
+                res.render('dashboard', { title: 'Dashboard', isAuthenticated: req.session.isLoggedIn, tweet_list: response.data})
+
                 })
                 .catch(function (error) {
                 console.log(error);
@@ -168,7 +169,7 @@ module.exports = {
                     })
                     .then(function (response) {
                     console.log(response);
-                    res.render('tweeters', {tweeter_list: response.data, isAuthenticated: req.session.isLoggedIn});
+                    res.render('dashboard', { title: 'Dashboard', isAuthenticated: req.session.isLoggedIn, tweet_list: response.data})
                 })
                     .catch(function (error) {
                     console.log(error);

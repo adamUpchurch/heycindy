@@ -1,0 +1,23 @@
+search
+  h1 search dope tweets
+  form(method='POST' action='/find_tweets_by_phrase').tweet
+    .form-group
+      label(for='phrase') Search 
+      input#name.form-control(type='text', name='phrase', placeholder='phrase', required='true')
+    button.btn.btn-primary(type='submit') S'go!
+
+  h5 Follow randos
+  form(method='POST' action='/follow_random')
+    .form-group
+      label(for='atMost') as many as
+      input#name.form-control(type='number', name='atMost', placeholder='#', required='true')
+      label(for='thatSaid') that mentioned
+      input#name.form-control(type='text', name='thatSaid', placeholder='phrase', required='true')
+      label(for='polarityMin') with positive vibes
+      input#name.form-control(type='number', name='polarityMin', placeholder='#', required='true' max=100 min=-100)
+    button.btn.btn-primary(type='submit') Do it!
+
+    if errors
+      ul
+          for error in errors
+              li!= error.msg

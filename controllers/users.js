@@ -2,6 +2,8 @@ var User = require('../models/users'),
     async   = require('async');
     bcrypt  = require('bcryptjs')
     _ = require("underscore");
+    axios = require('axios');
+
 
 const   { body,validationResult } = require('express-validator/check'),
         { sanitizeBody } = require('express-validator/filter');
@@ -203,6 +205,12 @@ module.exports = {
     
             sanitizeBody('first_name').escape(),
             sanitizeBody('family_name').escape(),
+            sanitizeBody('company_name').escape(),
+            sanitizeBody('common_phrase').escape(),
+            sanitizeBody('consumer_key').escape(),
+            sanitizeBody('consumer_secret').escape(),
+            sanitizeBody('access_token').escape(),
+            sanitizeBody('access_token_secret').escape(),
     
             (req, res, next) => {
                 console.log('Creating new user!')
@@ -234,8 +242,29 @@ module.exports = {
             }
         ],
     dashboard: (req, res) => {
-        console.log(req.session)
-        res.render('dashboard', { title: 'Dashboard', isAuthenticated: req.session.isLoggedIn})
+        User.findById(req.session.user._id, (err, user) => {
+            if(err) {
+                console.log(err)
+            }
+            if(user){
+                console.log('find_tweets_by_phrase')
+                console.log(user.twitterCredentials)
+                axios.post('http://127.0.0.1:5000/find_tweets_by_phrase', {
+                    phrase: user.common_phrase,
+                    twitterCredentials: user.twitterCredentials,
+                    })
+                    .then(function (response) {
+                    console.log(response);
+                    res.render('dashboard', { search_phrase: user.common_phrase, isAuthenticated: req.session.isLoggedIn, tweet_list: response.data})
+                })
+                .catch(function (error) {
+                console.log(error);
+                });
+            } 
+            else {
+                res.redirect('/login')
+            }
+        })
     },
     profile_get: (req, res) => {
         User.findById(req.session.user._id, (err, user) => {
@@ -263,6 +292,7 @@ module.exports = {
         sanitizeBody('first_name').escape(),
         sanitizeBody('family_name').escape(),
         sanitizeBody('company_name').escape(),
+        sanitizeBody('common_phrase').escape(),
         sanitizeBody('email').escape(),
         sanitizeBody('consumer_key').escape(),
         sanitizeBody('consumer_secret').escape(),
@@ -280,7 +310,8 @@ module.exports = {
                 first_name: user.first_name,
                 family_name: user.family_name,
                 email: user.email,
-                company: user.company,
+                company_name: user.company_name,
+                common_phrase: user.common_phrase,
                 twitterCredentials: {
                     consumer_key: user.consumer_key,
                     consumer_secret: user.consumer_secret,

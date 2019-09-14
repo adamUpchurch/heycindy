@@ -6,6 +6,7 @@ var UserSchema = new Schema({
     first_name: {type: String, max: 100},
     family_name: {type: String, max: 100},
     company_name: {type: String, max: 100},
+    common_phrase: {type: String, max: 100},
     email: {type: String, unique: true},
     googleID: {type: String},
     twitterCredentials: {
