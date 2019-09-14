@@ -12,16 +12,13 @@ require('dotenv').config();
 // UNCOMMENT DURING LOCAL RUN
 // var {MongoDB, session}       = require('./config/keys')
 
-MongoDB = null // comment during local
-session = null // comment during local
-
 process.env.DATABASE_URL
 
-var mongoDB = MongoDB.dbURI ? MongoDB.dbURI : `${process.env.MONGODB_DBURI}?retryWrites=true`
+var mongoDB = process.env.MONGODB_DBURI ? `${process.env.MONGODB_DBURI}?retryWrites=true` : MongoDB.dbURI
 
 var app = express();
 var store = new mongoDBStore({
-  uri: MongoDB.uri ? MongoDB.uri : process.env.MONGODB_DBURI,
+  uri: process.env.MONGODB_DBURI ? process.env.MONGODB_DBURI : MongoDB.uri,
   collection: 'sessions'
 })
 //Set up mongoose connection
@@ -41,7 +38,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(
-  express_session({secret: session.cookieKey ? session.cookieKey : process.env.SESSION_COOKIEKEY, resave: false, saveUninitialized: false, store: store})
+  express_session({secret: process.env.SESSION_COOKIEKEY ? process.env.SESSION_COOKIEKEY : session.cookieKey, resave: false, saveUninitialized: false, store: store})
   )
 
 
