@@ -13,10 +13,10 @@ block content
         input#name.form-control(type='text', name='common_phrase', placeholder='phrase', value=(user.common_phrase ? user.common_phrase : ''), required='true') 
         div.tweet
         label Twitter Credentials
-        input#name.form-control(type='text', name='consumer_key', placeholder='consumer_key', value=(user.twitterCredentials.consumer_key ? user.twitterCredentials.consumer_key : ''), required='true')
-        input#name.form-control(type='text', name='consumer_secret', placeholder='consumer_secret', value=(user.twitterCredentials.consumer_secret ? user.twitterCredentials.consumer_secret : ''), required='true')
-        input#name.form-control(type='text', name='access_token', placeholder='access_token', value=(user.twitterCredentials.access_token ? user.twitterCredentials.access_token : ''), required='true')
-        input#name.form-control(type='text', name='access_token_secret', placeholder='access_token_secret', value=(user.twitterCredentials.access_token_secret ? user.twitterCredentials.access_token_secret : ''), required='true')
+        input#name.form-control(type='password', name='consumer_key', placeholder='consumer_key', value=(user.twitterCredentials.consumer_key ? user.twitterCredentials.consumer_key : ''), required='true')
+        input#name.form-control(type='password', name='consumer_secret', placeholder='consumer_secret', value=(user.twitterCredentials.consumer_secret ? user.twitterCredentials.consumer_secret : ''), required='true')
+        input#name.form-control(type='password', name='access_token', placeholder='access_token', value=(user.twitterCredentials.access_token ? user.twitterCredentials.access_token : ''), required='true')
+        input#name.form-control(type='password', name='access_token_secret', placeholder='access_token_secret', value=(user.twitterCredentials.access_token_secret ? user.twitterCredentials.access_token_secret : ''), required='true')
       button.btn.btn-primary(type='submit') update
     if errors
       ul

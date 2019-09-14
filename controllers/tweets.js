@@ -41,7 +41,7 @@ module.exports = {
             if(user){
                 console.log('find_tweets_by_phrase')
                 console.log(user.twitterCredentials)
-                axios.post('http://127.0.0.1:5000/find_tweets_by_phrase', {
+                axios.post('https://cindytweepy.herokuapp.com/find_tweets_by_phrase', {
                     phrase: req.body.phrase,
                     twitterCredentials: user.twitterCredentials
                 })
@@ -65,7 +65,7 @@ module.exports = {
                 console.log(err)
             }
             if(user){
-                axios.post('http://127.0.0.1:5000/create_friendship', {
+                axios.post('https://cindytweepy.herokuapp.com/create_friendship', {
                     follower_id: req.body.follower_id,
                     twitterCredentials: user.twitterCredentials,
                   })
@@ -87,7 +87,7 @@ module.exports = {
                 console.log(err)
             }
             if(user){
-                axios.post('http://127.0.0.1:5000/create_favorite', {
+                axios.post('https://cindytweepy.herokuapp.com/create_favorite', {
                     tweet_id: req.body.tweet_id,
                     twitterCredentials: user.twitterCredentials,
                   })
@@ -111,7 +111,7 @@ module.exports = {
             if(user){
                 console.log('find_tweets_by_phrase')
                 console.log(user.twitterCredentials)
-                axios.post('http://127.0.0.1:5000/create_retweet', {
+                axios.post('https://cindytweepy.herokuapp.com/create_retweet', {
                     tweet_id: req.body.tweet_id,
                     twitterCredentials: user.twitterCredentials,
                   })
@@ -135,7 +135,7 @@ module.exports = {
         if(user){
             console.log('find_tweets_by_phrase')
             console.log(user.twitterCredentials)
-            axios.post('http://127.0.0.1:5000/reply_to_tweet', {
+            axios.post('https://cindytweepy.herokuapp.com/reply_to_tweet', {
                 tweet_id: req.body.tweet_id,
                 status: req.body.status,
                 twitterCredentials: user.twitterCredentials,
@@ -161,7 +161,7 @@ module.exports = {
             if(user){
                 console.log('follow_random')
                 console.log(user.twitterCredentials)
-                axios.post('http://127.0.0.1:5000/follow_random', {
+                axios.post('https://cindytweepy.herokuapp.com/follow_random', {
                     thatSaid: req.body.thatSaid,
                     atMost: req.body.atMost,
                     polarityMin,
