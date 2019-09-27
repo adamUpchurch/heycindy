@@ -249,7 +249,7 @@ module.exports = {
             if(user){
                 console.log('find_tweets_by_phrase')
                 console.log(user.twitterCredentials)
-                axios.post('https://cindytweepy.herokuapp.com//find_tweets_by_phrase', {
+                axios.post('https://cindytweepy.herokuapp.com/find_tweets_by_phrase', {
                     phrase: user.common_phrase,
                     twitterCredentials: user.twitterCredentials,
                     })
