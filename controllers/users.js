@@ -129,6 +129,7 @@ module.exports = {
                             console.log(err)
                             return res.redirect('/dashboard')
                         })
+                        return res.redirect('/dashboard')
                     } else {
                         console.log('incorrect password')
                         res.redirect('/login')

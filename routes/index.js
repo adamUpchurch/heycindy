@@ -11,7 +11,7 @@ var twitter = require('../controllers/tweets')
 router.get('/', function(req, res, next) {
   console.log(req.session)
 
-  res.render('index', { title: 'Express', isHomePage: true,isAuthenticated: req.session.isLoggedIn});
+  res.render('index', { title: 'Express', isHomePage: true, isAuthenticated: req.session.isLoggedIn});
 });
 
 router.get('/dashboard', user.dashboard)
